@@ -83,6 +83,7 @@ const page = () => {
       toast("Signup failed", {
         description: errorMessage,
       });
+      setIsSubmitting(false);
     }
   };
 
