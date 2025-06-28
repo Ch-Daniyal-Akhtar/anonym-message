@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation"; // Fixed: Changed from next/router to next/navigation
 import { toast } from "sonner";
 import React from "react";
-import { verifySchema } from "@/schemas/signInSchema";
+import { verifySchema } from "@/schemas/verifySchema";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const VerifyAccount = () => {
   const router = useRouter();
@@ -91,6 +92,15 @@ const VerifyAccount = () => {
             </Button>
           </form>
         </Form>
+        <div>
+          <p>
+            Register Again?{" "}
+            <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
+              {" "}
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ export async function POST(request: Request) {
         message: "user not found",
       });
     }
+
     const isCodeValid = user.verifyCode === code;
     const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
 

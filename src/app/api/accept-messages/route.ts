@@ -18,38 +18,55 @@ export async function POST(request: Request) {
       { status: 401 }
     );
   }
-  const userId = user._id;
+
+  // FIX: Find user by email or username instead of _id
   const { acceptMessages } = await request.json();
 
   try {
+    // Try to find user by email first, then by username
+    let foundUser;
+    if (user.email) {
+      foundUser = await UserModel.findOne({ email: user.email });
+    } else if (user.username) {
+      foundUser = await UserModel.findOne({ username: user.username });
+    }
+
+    if (!foundUser) {
+      return Response.json(
+        {
+          success: false,
+          message: "User not found",
+        },
+        { status: 404 }
+      );
+    }
+
     const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
+      foundUser._id, // Use the found user's _id
       { isAcceptingMessage: acceptMessages },
       { new: true }
     );
+
     if (!updatedUser) {
       return Response.json(
         {
           success: false,
-          message: "failed to update user status to accept messages",
+          message: "Failed to update user status to accept messages",
         },
-        {
-          status: 401,
-        }
+        { status: 401 }
       );
     }
+
     return Response.json(
       {
         success: true,
         message: "Message acceptance status updated successfully",
         updatedUser,
       },
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (error) {
-    console.log("Fail to update user status to accept message");
+    console.log("Fail to update user status to accept message", error);
     return Response.json(
       {
         success: false,
@@ -74,33 +91,35 @@ export async function GET(request: Request) {
       { status: 401 }
     );
   }
-  const userId = user._id;
 
   try {
-    const foundUser = await UserModel.findById(userId);
+    // FIX: Find user by email or username instead of _id
+    let foundUser;
+    if (user.email) {
+      foundUser = await UserModel.findOne({ email: user.email });
+    } else if (user.username) {
+      foundUser = await UserModel.findOne({ username: user.username });
+    }
 
     if (!foundUser) {
       return Response.json(
         {
           success: false,
-          message: "no user exists by the user given",
+          message: "User not found",
         },
-        {
-          status: 404,
-        }
+        { status: 404 }
       );
     }
+
     return Response.json(
       {
         success: true,
         isAcceptingMessages: foundUser.isAcceptingMessage,
       },
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (error) {
-    console.log("Fail to update user status to accept message");
+    console.log("Error getting user acceptance status", error);
     return Response.json(
       {
         success: false,
