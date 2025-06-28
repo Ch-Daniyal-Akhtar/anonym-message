@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 
-const page = () => {
+const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -63,6 +63,7 @@ const page = () => {
         router.replace("/dashboard");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Error", {
         description: "An unexpected error occurred. Please try again.",
       });
@@ -182,4 +183,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SignInPage;

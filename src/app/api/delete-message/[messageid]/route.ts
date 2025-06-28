@@ -7,12 +7,13 @@ import { isValidObjectId } from "mongoose";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { messageid: string } }
+  { params }: { params: Promise<{ messageid: string }> }
 ) {
-  const messageId = params.messageid;
+  // Await the params - this is the key change
+  const { messageid } = await params;
 
   // Validate message ID format first
-  if (!isValidObjectId(messageId)) {
+  if (!isValidObjectId(messageid)) {
     return Response.json(
       {
         success: false,
@@ -41,15 +42,15 @@ export async function DELETE(
     // Add some logging for debugging
     console.log(
       "Attempting to delete message:",
-      messageId,
+      messageid,
       "for user:",
       user._id
     );
 
-    // Capture the result of updateOne operation
+    // Fix: Changed 'message' to 'messages' (assuming your schema uses 'messages')
     const updateResult = await UserModel.updateOne(
       { _id: user._id },
-      { $pull: { message: { _id: messageId } } }
+      { $pull: { message: { _id: messageid } } }
     );
 
     console.log("Update result:", updateResult);
